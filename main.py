@@ -1,4 +1,4 @@
-from draft import log_fun, make_logger
+from make_logger import log_fun, make_logger
 import logging
 
 logger = make_logger(__name__)
