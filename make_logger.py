@@ -4,6 +4,7 @@ import pathlib
 from pathlib import Path
 import functools
 import sys, os
+from datetime import datetime
 
 
 def make_logger(filename: str=f"{__name__}.log", path: pathlib.Path=None):
@@ -34,6 +35,7 @@ def log_fun(func):
     :return:
     """
     logger = logging.getLogger()
+    entering_time = datetime.now()
     logger.info(f"Entering {func.__name__}")
 
     @functools.wraps(func)
@@ -46,7 +48,8 @@ def log_fun(func):
             logger.exception(error_msg, exc_info=True)
 
         finally:
-            logger.debug(f"Leaving {func.__name__}")
+            leaving_time = datetime.now()
+            logger.debug(f"Leaving {func.__name__} | Elapsed: {leaving_time - entering_time}")
             return
 
     return wrapper
