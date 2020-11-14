@@ -12,5 +12,5 @@ if __name__ == '__main__':
 
     logger.debug("Hey")
 
-    result = divide(10, 0)
+    result = divide(10, 2)
     print(result)

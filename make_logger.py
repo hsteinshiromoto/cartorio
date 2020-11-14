@@ -50,6 +50,5 @@ def log_fun(func):
         finally:
             leaving_time = datetime.now()
             logger.debug(f"Leaving {func.__name__} | Elapsed: {leaving_time - entering_time}")
-            return
 
     return wrapper
