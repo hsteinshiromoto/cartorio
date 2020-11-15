@@ -1,4 +1,4 @@
-from make_logger import log_fun, make_logger
+from src.make_logger import log_fun, make_logger
 import logging
 from datetime import datetime
 
