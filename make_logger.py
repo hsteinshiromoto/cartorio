@@ -7,7 +7,7 @@ import sys, os
 from datetime import datetime
 
 
-def make_logger(filename: str=f"{__name__}.log", path: pathlib.Path=None):
+def make_logger(filename: str=f"{datetime.now().date()}_{datetime.now().time()}.log", path: pathlib.Path=Path.cwd().resolve()):
     """
     src: https://realpython.com/python-logging/
 
@@ -22,6 +22,12 @@ def make_logger(filename: str=f"{__name__}.log", path: pathlib.Path=None):
     # Create a custom logger
     logging.config.fileConfig(f'logging.conf', disable_existing_loggers=False)
     logger = logging.getLogger()
+
+    fh = logging.FileHandler(str(path / f'{filename}'))
+    formatter = logging.Formatter('%(asctime)-16s || %(name)s || %(process)d || %(levelname)s || %(message)s')
+    fh.setFormatter(formatter)
+
+    logger.addHandler(fh)
 
     return logger
 
