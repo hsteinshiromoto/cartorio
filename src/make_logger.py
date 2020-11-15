@@ -14,7 +14,7 @@ PROJECT_ROOT = Path(subprocess.Popen(['git', 'rev-parse', '--show-toplevel'], st
 
 def make_logger(filename: str, path: pathlib.Path=PROJECT_ROOT / "logs"):
     """
-    src: https://realpython.com/python-logging/
+    Instantiate logger object
 
     Args:
         filename (str): Path to file calling make_logger.
@@ -22,6 +22,9 @@ def make_logger(filename: str, path: pathlib.Path=PROJECT_ROOT / "logs"):
 
     Returns:
         [type]: [description]
+
+    References:
+        [1] https://realpython.com/python-logging/
     """
     logging.config.fileConfig(str(PROJECT_ROOT / "conf" / "logging.conf"), disable_existing_loggers=False)
     logger = logging.getLogger()
@@ -40,11 +43,16 @@ def make_logger(filename: str, path: pathlib.Path=PROJECT_ROOT / "logs"):
 
 def log_fun(func):
     """
-    src https://dev.to/aldo/implementing-logging-in-python-via-decorators-1gje
+    Log a functions input and outputs
 
-    We create a parent function to take arguments
-    :param path:
-    :return:
+    Args:
+        func (callable): Callable to to be logged
+
+    Returns:
+        Callable: Callable outputs
+
+    References:
+        [1] https://dev.to/aldo/implementing-logging-in-python-via-decorators-1gje
     """
     logger = logging.getLogger()
     entering_time = datetime.now()
