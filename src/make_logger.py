@@ -18,7 +18,7 @@ def make_logger(filename: str, path: pathlib.Path=PROJECT_ROOT / "logs"):
 
     Args:
         filename (str): Path to file calling make_logger.
-        path (pathlib.Path, optional): Path where the log file is saved. Defaults to None.
+        path (pathlib.Path, optional): Path where the log file is saved. Defaults to logs/.
 
     Returns:
         [type]: [description]
