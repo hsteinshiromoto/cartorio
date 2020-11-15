@@ -7,23 +7,23 @@ import sys, os
 from datetime import datetime
 
 
-def make_logger(filename: str=f"{datetime.now().date()}_{datetime.now().time()}.log"
-                ,path: pathlib.Path=Path.cwd().resolve()):
+def make_logger(filename: str, path: pathlib.Path=Path.cwd().resolve()):
     """
     src: https://realpython.com/python-logging/
 
     Args:
-        filename (str, optional): [description]. Defaults to f"{__name__}.log".
-        path (pathlib.Path, optional): [description]. Defaults to None.
+        filename (str, optional): Path to file calling make_logger.
+        path (pathlib.Path, optional): Path where the log file is saved. Defaults to None.
 
     Returns:
         [type]: [description]
     """
 
-    # Create a custom logger
+    
     logging.config.fileConfig(f'logging.conf', disable_existing_loggers=False)
     logger = logging.getLogger()
 
+    filename = f"{Path(filename).stem}_{datetime.now().date()}_{datetime.now().time()}.log"
     fh = logging.FileHandler(str(path / f'{filename}'))
     fh.setLevel(logging.DEBUG)
 
