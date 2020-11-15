@@ -6,21 +6,24 @@ import functools
 import sys, os
 from datetime import datetime
 
+import subprocess
 
-def make_logger(filename: str, path: pathlib.Path=Path.cwd().resolve()):
+
+PROJECT_ROOT = Path(subprocess.Popen(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE).communicate()[0].rstrip().decode('utf-8'))
+
+
+def make_logger(filename: str, path: pathlib.Path=PROJECT_ROOT / "logs"):
     """
     src: https://realpython.com/python-logging/
 
     Args:
-        filename (str, optional): Path to file calling make_logger.
+        filename (str): Path to file calling make_logger.
         path (pathlib.Path, optional): Path where the log file is saved. Defaults to None.
 
     Returns:
         [type]: [description]
     """
-
-    
-    logging.config.fileConfig(f'logging.conf', disable_existing_loggers=False)
+    logging.config.fileConfig(str(PROJECT_ROOT / "conf" / "logging.conf"), disable_existing_loggers=False)
     logger = logging.getLogger()
 
     filename = f"{Path(filename).stem}_{datetime.now().date()}_{datetime.now().time()}.log"
