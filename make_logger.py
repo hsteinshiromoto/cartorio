@@ -7,7 +7,7 @@ import sys, os
 from datetime import datetime
 
 
-def make_logger(logger_name: str, filename: str=f"{datetime.now().date()}_{datetime.now().time()}.log"
+def make_logger(filename: str=f"{datetime.now().date()}_{datetime.now().time()}.log"
                 ,path: pathlib.Path=Path.cwd().resolve()):
     """
     src: https://realpython.com/python-logging/
