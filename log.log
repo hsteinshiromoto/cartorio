@@ -1,7 +1,0 @@
-2020-Nov-14 15:05:07 || root || 37400 || ERROR || In divide
-Traceback (most recent call last):
-  File "/Users/humberto/Projects/logger/draft.py", line 75, in wrapper
-    return func(*args, **kwargs)
-  File "/Users/humberto/Projects/logger/other.py", line 8, in divide
-    return num1 / num2
-ZeroDivisionError: division by zero
