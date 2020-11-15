@@ -12,13 +12,14 @@ import subprocess
 PROJECT_ROOT = Path(subprocess.Popen(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE).communicate()[0].rstrip().decode('utf-8'))
 
 
-def make_logger(filename: str, path: pathlib.Path=PROJECT_ROOT / "logs"):
+def make_logger(filename: str, path: pathlib.Path=PROJECT_ROOT / "logs", test: bool=False):
     """
     Instantiate logger object
 
     Args:
         filename (str): Path to file calling make_logger.
         path (pathlib.Path, optional): Path where the log file is saved. Defaults to logs/.
+        test (bool): Return filename
 
     Returns:
         [type]: [description]
@@ -38,7 +39,11 @@ def make_logger(filename: str, path: pathlib.Path=PROJECT_ROOT / "logs"):
 
     logger.addHandler(fh)
 
-    return logger
+    if test == True:
+        return logger, str(path / f'{filename}')
+
+    else:
+        return logger
 
 
 def log_fun(func):
