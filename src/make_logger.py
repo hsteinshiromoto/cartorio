@@ -1,13 +1,13 @@
+import functools
+import inspect
 import logging
 import logging.config
+import os
 import pathlib
-from pathlib import Path
-import functools
-import sys, os
-from datetime import datetime
-
 import subprocess
-
+import sys
+from datetime import datetime
+from pathlib import Path
 
 PROJECT_ROOT = Path(subprocess.Popen(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE).communicate()[0].rstrip().decode('utf-8'))
 
@@ -60,8 +60,12 @@ def log_fun(func):
         [1] https://dev.to/aldo/implementing-logging-in-python-via-decorators-1gje
     """
     logger = logging.getLogger()
+
+    func_filename = inspect.currentframe().f_back.f_code.co_filename #Filename where the function is called from
+    func_lineno = inspect.currentframe().f_back.f_lineno             #TODO: Line of filename where the function is called from
+
     entering_time = datetime.now()
-    logger.info(f"Entering {func.__name__}")
+    logger.info(f"{Path(func_filename).name} || {func.__module__} || {func_lineno} || Entering {func.__name__}")
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -74,6 +78,6 @@ def log_fun(func):
 
         finally:
             leaving_time = datetime.now()
-            logger.info(f"Leaving {func.__name__} | Elapsed: {leaving_time - entering_time}")
+            logger.info(f"{func.__module__} || {func_lineno} || Leaving {func.__name__} || Elapsed: {leaving_time - entering_time}")
 
     return wrapper
