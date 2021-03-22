@@ -4,3 +4,4 @@ __pycache__/*
 *.pytest_cache
 *.pyc
 __pycache__/draft.cpython-38.pyc
+.DS_Store
