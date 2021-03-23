@@ -61,6 +61,7 @@ def log_fun(func):
 
     References:
         [1] https://dev.to/aldo/implementing-logging-in-python-via-decorators-1gje
+        [2] https://stackoverflow.com/questions/6810999/how-to-determine-file-function-and-line-number
     """
     logger = logging.getLogger()
 
