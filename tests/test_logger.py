@@ -24,5 +24,5 @@ if __name__ == '__main__':
     result = divide(10, 0)
 
     LOGGER.info("Again")
-    
+
     result = multiply(10, 1)
