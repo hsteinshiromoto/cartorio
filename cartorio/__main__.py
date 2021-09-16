@@ -14,7 +14,7 @@ PROJECT_ROOT = Path(subprocess.Popen(['git', 'rev-parse', '--show-toplevel'],
                     stdout=subprocess.PIPE).communicate()[0].rstrip().decode('utf-8'))
 
 
-def make_logger(filename: str, path: Path = PROJECT_ROOT / "logs", test: bool = False, log_config_file: Path = PROJECT_ROOT / "conf" / "logging.conf"):
+def make_logger(filename: str, logs_path: Path = PROJECT_ROOT / "logs", test: bool = False, log_config_file: Path = PROJECT_ROOT / "conf" / "logging.conf"):
     """
     Instantiate logger object
 
@@ -30,14 +30,20 @@ def make_logger(filename: str, path: Path = PROJECT_ROOT / "logs", test: bool = 
     References:
         [1] https://realpython.com/python-logging/
     """
+    # 1. Create logs directory if it doesn't exist
+    logs_path.mkdir(parents=True, exist_ok=True)
+
+    # 2. Instantiate logger object
     logging.config.fileConfig(str(log_config_file),
                               disable_existing_loggers=False)
     logger = logging.getLogger()
 
+    # 3. Create log file
     filename = f"{Path(filename).stem}_{datetime.now().date()}_{datetime.now().time()}.log"
-    fh = logging.FileHandler(str(path / f'{filename}'))
+    fh = logging.FileHandler(str(logs_path / f'{filename}'))
     fh.setLevel(logging.DEBUG)
 
+    # 4. Set log format and add handler to logger
     formatter = logging.Formatter(
         '%(asctime)-16s || %(name)s || %(process)d || %(levelname)s || %(message)s')
     fh.setFormatter(formatter)
@@ -45,7 +51,7 @@ def make_logger(filename: str, path: Path = PROJECT_ROOT / "logs", test: bool = 
     logger.addHandler(fh)
 
     if test == True:
-        return logger, str(path / f'{filename}')
+        return logger, str(logs_path / f'{filename}')
 
     else:
         return logger
