@@ -23,7 +23,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.9",
     ],
-    packages=["hypothesis_test"],
+    packages=["cartorio"],
     include_package_data=True,
     install_requires=["numpy", "scipy", "statsmodels", "math"],
     entry_points={
