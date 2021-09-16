@@ -8,6 +8,7 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import Callable
 
 PROJECT_ROOT = Path(subprocess.Popen(['git', 'rev-parse', '--show-toplevel'],
                     stdout=subprocess.PIPE).communicate()[0].rstrip().decode('utf-8'))
@@ -50,7 +51,7 @@ def make_logger(filename: str, path: Path = PROJECT_ROOT / "logs", test: bool = 
         return logger
 
 
-def log_fun(func):
+def log_fun(func: Callable):
     """
     Log a callable
 
