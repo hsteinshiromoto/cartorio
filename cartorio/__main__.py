@@ -31,10 +31,10 @@ def make_logs_path(path: Path = PROJECT_ROOT / "logs") -> Path:
     """
     path.mkdir(parents=True, exist_ok=True)
 
-    return path
+    return
 
 
-def make_logger(log_config_file: Path = Path(__file__).resolve() / "conf" / "logging.conf"):
+def make_logger(log_config_file: Path = PROJECT_ROOT / "cartorio" / "conf" / "logging.conf"):
 
     logging.config.fileConfig(str(log_config_file),
                               disable_existing_loggers=False)
@@ -42,45 +42,13 @@ def make_logger(log_config_file: Path = Path(__file__).resolve() / "conf" / "log
     return logging.getLogger()
 
 
-def main(filename: str, logs_path: Path = PROJECT_ROOT / "logs", test: bool = False, log_config_file: Path = PROJECT_ROOT / "conf" / "logging.conf"):
-    """
-    Instantiate logger object
+def make_handler(filename: str, logs_path: Path, log_format: str):
 
-    Args:
-        filename (str): Log file
-        path (Path, optional): Path where the log file is saved. Defaults to PROJECT_ROOT/logs/.
-        test (bool): Return filename
-        log_config_file (Path, optional): Path contaning the log config file. Defaults to PROJECT_ROOT / "conf" / "logging.conf"
-
-    Returns:
-        (logging.getLogger()): Logging object
-
-    References:
-        [1] https://realpython.com/python-logging/
-    """
-    # 1. Create logs directory if it doesn't exist
-    logs_path = make_logs_path(logs_path)
-
-    # 2. Instantiate logger object
-    logger = make_logger(log_config_file)
-
-    # 3. Create log file
-    filename = f"{Path(filename).stem}_{datetime.now().date()}_{datetime.now().time()}.log"
     fh = logging.FileHandler(str(logs_path / f'{filename}'))
     fh.setLevel(logging.DEBUG)
+    fh.setFormatter(log_format)
 
-    # 4. Set log format and add handler to logger
-    formatter = logging.Formatter(
-        '%(asctime)-16s || %(name)s || %(process)d || %(levelname)s || %(message)s')
-    fh.setFormatter(formatter)
-
-    logger.addHandler(fh)
-
-    if test == True:
-        return logger, str(logs_path / f'{filename}')
-
-    else:
-        return logger
+    return fh
 
 
 def log_fun(func: Callable):
@@ -128,3 +96,37 @@ def log_fun(func: Callable):
                 f"{Path(func_filename).name} || {func.__module__} || {func_lineno} || Leave || {func.__name__} || Elapsed: {leaving_time - entering_time}")
 
     return wrapper
+
+
+def main(filename: str, logs_path: Path = PROJECT_ROOT / "logs", test: bool = False, log_config_file: Path = PROJECT_ROOT / "conf" / "logging.conf"):
+    """
+    Instantiate logger object
+
+    Args:
+        filename (str): Log file
+        path (Path, optional): Path where the log file is saved. Defaults to PROJECT_ROOT/logs/.
+        test (bool): Return filename
+        log_config_file (Path, optional): Path contaning the log config file. Defaults to PROJECT_ROOT / "conf" / "logging.conf"
+
+    Returns:
+        (logging.getLogger()): Logging object
+
+    References:
+        [1] https://realpython.com/python-logging/
+    """
+    # 1. Create logs directory if it doesn't exist
+    make_logs_path(logs_path)
+
+    # 2. Instantiate logger object
+    logger = make_logger(log_config_file)
+
+    # 3. Create log file
+    format_filename = f"{Path(filename).stem}_{datetime.now().date()}_{datetime.now().time()}.log"
+    log_format = logging.Formatter(
+        '%(asctime)-16s || %(name)s || %(process)d || %(levelname)s || %(message)s')
+
+    fh = make_handler(format_filename, logs_path, log_format)
+
+    logger.addHandler(fh)
+
+    return logger
