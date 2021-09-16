@@ -25,12 +25,21 @@ def make_logs_path(path: Path = PROJECT_ROOT / "logs") -> Path:
     Returns:
         (Path): Path to logs directory
 
-    References:
-        [1] https://realpython.com/python-logging/
+    Example:
+        >>> make_logs_path()
+        PROJECT_ROOT / "logs"
     """
     path.mkdir(parents=True, exist_ok=True)
 
     return path
+
+
+def make_logger(log_config_file: Path = Path(__file__).resolve() / "conf" / "logging.conf"):
+
+    logging.config.fileConfig(str(log_config_file),
+                              disable_existing_loggers=False)
+
+    return logging.getLogger()
 
 
 def main(filename: str, logs_path: Path = PROJECT_ROOT / "logs", test: bool = False, log_config_file: Path = PROJECT_ROOT / "conf" / "logging.conf"):
@@ -50,12 +59,10 @@ def main(filename: str, logs_path: Path = PROJECT_ROOT / "logs", test: bool = Fa
         [1] https://realpython.com/python-logging/
     """
     # 1. Create logs directory if it doesn't exist
-    logs_path.mkdir(parents=True, exist_ok=True)
+    logs_path = make_logs_path(logs_path)
 
     # 2. Instantiate logger object
-    logging.config.fileConfig(str(log_config_file),
-                              disable_existing_loggers=False)
-    logger = logging.getLogger()
+    logger = make_logger(log_config_file)
 
     # 3. Create log file
     filename = f"{Path(filename).stem}_{datetime.now().date()}_{datetime.now().time()}.log"
