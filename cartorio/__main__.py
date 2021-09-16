@@ -14,7 +14,26 @@ PROJECT_ROOT = Path(subprocess.Popen(['git', 'rev-parse', '--show-toplevel'],
                     stdout=subprocess.PIPE).communicate()[0].rstrip().decode('utf-8'))
 
 
-def make_logger(filename: str, logs_path: Path = PROJECT_ROOT / "logs", test: bool = False, log_config_file: Path = PROJECT_ROOT / "conf" / "logging.conf"):
+def make_logs_path(path: Path = PROJECT_ROOT / "logs") -> Path:
+    """
+    Create logs directory if it doesn't exist
+
+    Args:
+        path (Path, optional): Path where the log file is saved. Defaults to PROJECT_ROOT/logs/.
+        test (bool): Return filename
+
+    Returns:
+        (Path): Path to logs directory
+
+    References:
+        [1] https://realpython.com/python-logging/
+    """
+    path.mkdir(parents=True, exist_ok=True)
+
+    return path
+
+
+def main(filename: str, logs_path: Path = PROJECT_ROOT / "logs", test: bool = False, log_config_file: Path = PROJECT_ROOT / "conf" / "logging.conf"):
     """
     Instantiate logger object
 
