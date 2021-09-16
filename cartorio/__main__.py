@@ -9,12 +9,11 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-PROJECT_ROOT = Path(subprocess.Popen(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE).communicate()[0].rstrip().decode('utf-8'))
+PROJECT_ROOT = Path(subprocess.Popen(['git', 'rev-parse', '--show-toplevel'],
+                    stdout=subprocess.PIPE).communicate()[0].rstrip().decode('utf-8'))
 
 
-def make_logger(filename: str, path: Path=PROJECT_ROOT / "logs"
-                ,test: bool=False
-                ,log_config_file: Path=PROJECT_ROOT / "conf" / "logging.conf"):
+def make_logger(filename: str, path: Path = PROJECT_ROOT / "logs", test: bool = False, log_config_file: Path = PROJECT_ROOT / "conf" / "logging.conf"):
     """
     Instantiate logger object
 
@@ -30,14 +29,16 @@ def make_logger(filename: str, path: Path=PROJECT_ROOT / "logs"
     References:
         [1] https://realpython.com/python-logging/
     """
-    logging.config.fileConfig(str(log_config_file), disable_existing_loggers=False)
+    logging.config.fileConfig(str(log_config_file),
+                              disable_existing_loggers=False)
     logger = logging.getLogger()
 
     filename = f"{Path(filename).stem}_{datetime.now().date()}_{datetime.now().time()}.log"
     fh = logging.FileHandler(str(path / f'{filename}'))
     fh.setLevel(logging.DEBUG)
 
-    formatter = logging.Formatter('%(asctime)-16s || %(name)s || %(process)d || %(levelname)s || %(message)s')
+    formatter = logging.Formatter(
+        '%(asctime)-16s || %(name)s || %(process)d || %(levelname)s || %(message)s')
     fh.setFormatter(formatter)
 
     logger.addHandler(fh)
@@ -65,8 +66,8 @@ def log_fun(func):
     """
     logger = logging.getLogger()
 
-    #Filename where the function is called from
-    func_filename = inspect.currentframe().f_back.f_code.co_filename 
+    # Filename where the function is called from
+    func_filename = inspect.currentframe().f_back.f_code.co_filename
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -75,12 +76,13 @@ def log_fun(func):
         info = inspect.getframeinfo(frame)
 
         # Line where the function is called from
-        func_lineno = info.lineno            
+        func_lineno = info.lineno
 
         entering_time = datetime.now()
-        logger.info(f"{Path(func_filename).name} || {func.__module__} || {func_lineno} || Enter || {func.__name__}")
-        
-        try:                
+        logger.info(
+            f"{Path(func_filename).name} || {func.__module__} || {func_lineno} || Enter || {func.__name__}")
+
+        try:
             return func(*args, **kwargs)
 
         except Exception:
@@ -89,6 +91,7 @@ def log_fun(func):
 
         finally:
             leaving_time = datetime.now()
-            logger.info(f"{Path(func_filename).name} || {func.__module__} || {func_lineno} || Leave || {func.__name__} || Elapsed: {leaving_time - entering_time}")
+            logger.info(
+                f"{Path(func_filename).name} || {func.__module__} || {func_lineno} || Leave || {func.__name__} || Elapsed: {leaving_time - entering_time}")
 
     return wrapper
