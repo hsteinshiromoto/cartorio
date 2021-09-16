@@ -23,6 +23,9 @@ def main(filename: str, logs_path: Path = PROJECT_ROOT / "logs", log_config_file
     Returns:
         (logging.getLogger()): Logging object
 
+    Example:
+        >>> log = main("test.log")
+
     References:
         [1] https://realpython.com/python-logging/
     """
