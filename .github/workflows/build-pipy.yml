@@ -55,8 +55,11 @@ jobs:
         with:
           name: pypi_artifacts 
 
+      - name: Echo gitref
+        run: echo ${{ github.ref }}
+
       - name: Publish package
-        if: ${{ startsWith('refs/tags/v', github.ref) }}
+        if: ${{ startsWith('refs/tags', github.ref) }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
