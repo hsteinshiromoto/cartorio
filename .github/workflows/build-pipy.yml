@@ -56,7 +56,7 @@ jobs:
           name: pypi_artifacts 
 
       - name: Echo ref
-        if: ${{ github.event.ref_type == 'tag' }}
+        if: ${{ startsWith('refs/tags', github.ref) }}
         run: echo "Deploying tag ${{ github.ref }}"
 
       - name: Publish package
