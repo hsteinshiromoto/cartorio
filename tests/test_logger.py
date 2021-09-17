@@ -14,7 +14,6 @@ sys.path.append(str(PROJECT_ROOT))
 
 from cartorio.log import *
 
-# LOGGER, FILENAME = make_logger(__file__, test=True)
 
 def test_make_logs_path():
 
@@ -37,25 +36,19 @@ def test_set_handler():
         msg = f"Expected baseFilename to be {handler.baseFilename}. Got {path / f'{Path(__file__).stem}.log'}."
         assert handler.baseFilename == str(path / format_filename), msg
         assert handler.level == 10
-
-# @log_fun
-# def divide(num1, num2):
-#     return num1 / num2
+        assert Path(handler.baseFilename).is_file() == True
 
 
-# @log_fun
-# def multiply(num1, num2):
-#     return num1 * num2
+def test_fun():
+    #TODO: Test the logger
 
+    @fun
+    def divide(num1, num2):
+        return num1 / num2
 
-# def test_logfile():
-#     assert Path(FILENAME).is_file() == True
+    @fun
+    def multiply(num1, num2):
+        return num1 * num2
 
-
-# if __name__ == '__main__':
-
-#     result = divide(10, 0)
-
-#     LOGGER.info("Again")
-
-#     result = multiply(10, 1)
+    divide(10, 0)
+    multiply(10, 1)
