@@ -1,7 +1,7 @@
 import functools
 import inspect
 import logging
-# import logging.config
+import logging.config
 import subprocess
 from datetime import datetime
 from pathlib import Path
@@ -70,7 +70,7 @@ def make_path(path: Path=PROJECT_ROOT/"logs") -> Path:
         (Path): Path to logs directory
 
     Example:
-        >>> _ = make_logs_path()
+        >>> _ = make_path()
     """
     path.mkdir(parents=True, exist_ok=True)
 
@@ -114,7 +114,9 @@ def set_handler(filename: str, log_format: str
         (logging.FileHandler): File handler object
 
     Example:
-        >>> _ = set_handler(__file__, logs_path, log_format)
+        >>> format_filename = f"{Path(__file__).stem}.log"
+        >>> log_format = logging.Formatter('%(asctime)-16s || %(name)s || %(process)d || %(levelname)s || %(message)s')
+        >>> _ = set_handler(__file__, log_format)
     """
     if not logs_path.is_dir():
         msg = f"Expected dir {logs_path} to exist."
@@ -127,7 +129,7 @@ def set_handler(filename: str, log_format: str
     return fh
 
 
-def log(filename: str, logs_path: Path = PROJECT_ROOT / "logs", log_config_file: Path = PROJECT_ROOT / "conf" / "logging.conf"):
+def log(filename: str, logs_path: Path = PROJECT_ROOT / "logs", log_config_file=PROJECT_ROOT/"cartorio"/"conf"/"logging.conf"):
     """
     Instantiate logger object
 
@@ -141,7 +143,7 @@ def log(filename: str, logs_path: Path = PROJECT_ROOT / "logs", log_config_file:
         (logging.getLogger()): Logging object
 
     Example:
-        >>> log = main("test.log")
+        >>> logger = log("test.log")
 
     References:
         [1] https://realpython.com/python-logging/
@@ -150,15 +152,19 @@ def log(filename: str, logs_path: Path = PROJECT_ROOT / "logs", log_config_file:
     _ = make_path(logs_path)
 
     # 2. Instantiate logger object
-    logger = config_logger(log_config_file)
+    logger = config_logger(log_config_file=log_config_file)
 
     # 3. Create log file
     format_filename = f"{Path(filename).stem}_{datetime.now().date()}_{datetime.now().time()}.log"
     log_format = logging.Formatter(
         '%(asctime)-16s || %(name)s || %(process)d || %(levelname)s || %(message)s')
 
-    fh = set_handler(format_filename, logs_path, log_format)
+    fh = set_handler(format_filename, log_format, logs_path)
 
     logger.addHandler(fh)
 
     return logger
+
+
+if __name__ == "__main__":
+    logger = log(__file__)
