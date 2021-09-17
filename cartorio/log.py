@@ -74,7 +74,7 @@ def make_path(path: Path=PROJECT_ROOT/"logs") -> Path:
     """
     path.mkdir(parents=True, exist_ok=True)
 
-    return
+    return path
 
 
 def config_logger(log_config_file: Path=PROJECT_ROOT/"cartorio"/"conf"/"logging.conf") -> logging.getLogger:
@@ -147,7 +147,7 @@ def log(filename: str, logs_path: Path = PROJECT_ROOT / "logs", log_config_file:
         [1] https://realpython.com/python-logging/
     """
     # 1. Create logs directory if it doesn't exist
-    make_path(logs_path)
+    _ = make_path(logs_path)
 
     # 2. Instantiate logger object
     logger = config_logger(log_config_file)
