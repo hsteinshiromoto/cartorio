@@ -14,7 +14,7 @@ on:
   pull_request:
 
   workflow_run:
-    workflows: ["Docker Build and Publish"]
+    workflows: ["Test Python Code"]
     types:
       - completed
 
