@@ -32,6 +32,16 @@ test:
 
 	@echo "${DOCKER_IMAGE_TAG}"
 
+## Bump minor version number
+bump_minor:
+	$(eval CURRENT_VERSION=$(shell git tag -l --sort=-creatordate | head -n 1 | cut -d "v" -f2-))
+	bumpversion --current-version ${CURRENT_VERSION} minor setup.py reader/__init__.py
+
+## Bump patch version number
+bump_patch:
+	$(eval CURRENT_VERSION=$(shell git tag -l --sort=-creatordate | head -n 1 | cut -d "v" -f2-))
+	bumpversion --current-version ${CURRENT_VERSION} patch setup.py reader/__init__.py
+
 ## Build Python package
 build:
 	python setup.py sdist bdist_wheel
