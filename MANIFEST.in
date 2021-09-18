@@ -1,1 +1,1 @@
-include log/conf/*.conf
+include cartorio/conf/*.conf
