@@ -5,13 +5,12 @@ import logging.config
 import subprocess
 from datetime import datetime
 from pathlib import Path
-from typing import Callable
 
 PROJECT_ROOT = Path(subprocess.Popen(['git', 'rev-parse', '--show-toplevel'],
                     stdout=subprocess.PIPE).communicate()[0].rstrip().decode('utf-8'))
 
 
-def fun(func: Callable):
+def fun(func):
     """
     Log a callable
 
