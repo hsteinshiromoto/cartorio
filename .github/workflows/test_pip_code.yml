@@ -1,0 +1,25 @@
+name: Test Pip Install Code
+
+on:
+  workflow_run:
+    workflows: ["PYPI Build and Publish"]
+    types:
+      - completed
+
+  # Run tests for any PRs.
+  pull_request:
+
+jobs:
+  test:
+    name: Test Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Install package
+        run: pip install cartorio
+
+      - name: Test package
+        run: python tests/from_pip.py
