@@ -1,5 +1,6 @@
 from logging import Logger
 from pathlib import Path
+import sys
 
 from cartorio.log import fun, log
 
@@ -15,4 +16,8 @@ def multiply(num1, num2):
     return num1 * num2
 
 multiply(10, 1)
-divide(10, 0)
+try:
+    divide(10, 0)
+
+except ZeroDivisionError as e:
+    print(sys.exc_info())

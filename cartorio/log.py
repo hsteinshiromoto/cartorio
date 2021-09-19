@@ -114,7 +114,8 @@ def set_handler(filename: str, log_format: str, logs_path: Path) -> logging.File
     Example:
         >>> format_filename = f"{Path(__file__).stem}.log"
         >>> log_format = logging.Formatter('%(asctime)-16s || %(name)s || %(process)d || %(levelname)s || %(message)s')
-        >>> _ = set_handler(__file__, log_format)
+        >>> logs_path = Path(__file__).resolve().parent
+        >>> _ = set_handler(__file__, log_format, logs_path=logs_path)
     """
     if not logs_path.is_dir():
         msg = f"Expected dir {logs_path} to exist."
@@ -142,7 +143,8 @@ def log(filename: str, logs_path: Path
         (logging.getLogger()): Logging object
 
     Example:
-        >>> logger = log("test.log")
+        >>> logs_path = Path(__file__).resolve().parent
+        >>> logger = log("test.log", logs_path)
 
     References:
         [1] https://realpython.com/python-logging/
