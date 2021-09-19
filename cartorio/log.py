@@ -6,8 +6,7 @@ import subprocess
 from datetime import datetime
 from pathlib import Path
 
-PROJECT_ROOT = Path(subprocess.Popen(['git', 'rev-parse', '--show-toplevel'],
-                    stdout=subprocess.PIPE).communicate()[0].rstrip().decode('utf-8'))
+PATH_SRC = Path(__file__).resolve().parent
 
 
 def fun(func):
@@ -45,9 +44,10 @@ def fun(func):
         try:
             return func(*args, **kwargs)
 
-        except Exception:
+        except Exception as e:
             error_msg = f"In {func.__name__}"
             logger.exception(error_msg, exc_info=True)
+            raise e
 
         finally:
             leaving_time = datetime.now()
@@ -57,7 +57,7 @@ def fun(func):
     return wrapper
 
 
-def make_path(path: Path=PROJECT_ROOT/"logs") -> Path:
+def make_path(path: Path=PATH_SRC/"logs") -> Path:
     """
     Create logs directory if it doesn't exist
 
@@ -76,7 +76,7 @@ def make_path(path: Path=PROJECT_ROOT/"logs") -> Path:
     return path
 
 
-def config_logger(log_config_file: Path=PROJECT_ROOT/"cartorio"/"conf"/"logging.conf") -> logging.getLogger:
+def config_logger(log_config_file: Path=PATH_SRC/"conf"/"logging.conf") -> logging.getLogger:
     """
     Configure logger object
 
@@ -96,15 +96,14 @@ def config_logger(log_config_file: Path=PROJECT_ROOT/"cartorio"/"conf"/"logging.
     return logging.getLogger()
 
 
-def set_handler(filename: str, log_format: str
-                ,logs_path: Path=PROJECT_ROOT/"logs") -> logging.FileHandler:
+def set_handler(filename: str, log_format: str, logs_path: Path) -> logging.FileHandler:
     """
     Set file handler for logger object
 
     Args:
         filename (str): File to be logged
         log_format (str): Log format
-        logs_path (Path, optional): Path where the log is saved. Defaults to PROJECT_ROOT/"logs".
+        logs_path (Path): Path where the log is saved.
     
     Raises:
         IOError: If folder doesn't exist
@@ -128,13 +127,14 @@ def set_handler(filename: str, log_format: str
     return fh
 
 
-def log(filename: str, logs_path: Path = PROJECT_ROOT / "logs", log_config_file=PROJECT_ROOT/"cartorio"/"conf"/"logging.conf"):
+def log(filename: str, logs_path: Path
+        ,log_config_file=PATH_SRC/"conf"/"logging.conf"):
     """
     Instantiate logger object
 
     Args:
         filename (str): Log file
-        path (Path, optional): Path where the log file is saved. Defaults to PROJECT_ROOT/logs/.
+        path (Path): Path where the log file is saved
         test (bool): Return filename
         log_config_file (Path, optional): Path contaning the log config file. Defaults to PROJECT_ROOT / "conf" / "logging.conf"
 
