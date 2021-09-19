@@ -1,4 +1,9 @@
-from cartorio.log import fun
+from logging import Logger
+from pathlib import Path
+
+from cartorio.log import fun, log
+
+logger = log(file=Path(__file__).resolve().stem, logs_path=Path(__file__).resolve().parent)
 
 
 @fun
