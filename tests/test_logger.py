@@ -1,7 +1,6 @@
 import logging
 import subprocess
 import sys
-from datetime import datetime
 from pathlib import Path
 
 import pytest
@@ -37,3 +36,25 @@ def test_set_handler():
         assert handler.baseFilename == str(path / format_filename), msg
         assert handler.level == 10
         assert Path(handler.baseFilename).is_file() == True
+
+
+def test_fun():
+    @fun
+    def divide(num1, num2):
+        return num1 / num2
+
+    @fun
+    def multiply(num1, num2):
+        return num1 * num2
+
+    multiply(10, 1)
+
+    with pytest.raises(ZeroDivisionError):
+        divide(10, 0)
+
+
+def test_log():
+    logs_path = Path(tempfile.mkdtemp())
+    logger = log("test.log", logs_path)
+    
+    assert True
