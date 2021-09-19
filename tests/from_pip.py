@@ -1,6 +1,5 @@
-from logging import Logger
-from pathlib import Path
 import sys
+from pathlib import Path
 
 from cartorio.log import fun, log
 
