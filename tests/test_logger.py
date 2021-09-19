@@ -52,3 +52,10 @@ def test_fun():
 
     with pytest.raises(ZeroDivisionError):
         divide(10, 0)
+
+
+def test_log():
+    logs_path = Path(tempfile.mkdtemp())
+    logger = log("test.log", logs_path)
+    
+    assert True
