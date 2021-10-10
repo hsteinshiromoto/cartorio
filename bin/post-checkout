@@ -10,12 +10,13 @@ BRANCH_TYPE=$(echo ${BRANCH_NAME}| cut -d/ -f1)
 NEXT_VERSION=$(echo ${BRANCH_NAME} | cut -d "v" -f2- | cut -d "v" -f2-)
 PREVIOUS_VERSION=$(git tag -l --sort=-creatordate | head -n 1 | cut -d "v" -f2-)
 PROJECT_NAME=$(basename $(git remote get-url origin) .git)
+PROJECT_ROOT=$(git rev-parse --show-toplevel)
 
 if [ "$BRANCH_TYPE" == "release" ]; then
 	echo "Running post-checkout git hook on branch $BRANCH_NAME"
 
 	echo "Updating version $PREVIOUS_VERSION to $NEXT_VERSION"
-	sed -i -e "s/$PREVIOUS_VERSION/$NEXT_VERSION/g" /workspaces/${PROJECT_NAME}/setup.py
-	sed -i -e "s/$PREVIOUS_VERSION/$NEXT_VERSION/g" /workspaces/${PROJECT_NAME}/${PROJECT_NAME}/__init__.py
+	sed -i -e "s/$PREVIOUS_VERSION/$NEXT_VERSION/g" ${PROJECT_ROOT}/setup.py
+	sed -i -e "s/$PREVIOUS_VERSION/$NEXT_VERSION/g" ${PROJECT_ROOT}/${PROJECT_NAME}/__init__.py
 
 fi
