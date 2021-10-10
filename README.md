@@ -14,6 +14,21 @@ pip install cartorio
 ```
 
 # 4. Usage
-1. Import module as `from cartorio import log, fun`
-2. Instantiate logger in the `__name__ == "__main__"` section of each script as `logger = log(*args)`.
-3. Use the decorator `@fun` to log in and out of each function.
+Example:
+
+```python
+import sys
+from pathlib import Path
+
+from cartorio.log import fun, log
+
+# Test instantiation of log file
+logger = log(filename=Path(__file__).resolve().stem, logs_path=Path(__file__).resolve().parent)
+
+@fun
+def multiply(num1, num2):
+    return num1 * num2
+
+# Test if entry and exit log messages are correct
+multiply(10, 1)
+```
