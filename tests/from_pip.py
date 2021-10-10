@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-from cartorio.log import fun, log
+from cartorio import fun, log
 
 # Tests installation from pip
 
