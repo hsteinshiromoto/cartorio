@@ -20,7 +20,7 @@ Example:
 import sys
 from pathlib import Path
 
-from cartorio.log import fun, log
+from cartorio import fun, log
 
 # Test instantiation of log file
 logger = log(filename=Path(__file__).resolve().stem, logs_path=Path(__file__).resolve().parent)
