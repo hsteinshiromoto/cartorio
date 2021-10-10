@@ -3,5 +3,6 @@ __pycache__/*
 *.vscode
 *.pytest_cache
 *.pyc
+*.py-e
 __pycache__/draft.cpython-38.pyc
 .DS_Store
