@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/312742876.svg)](https://zenodo.org/badge/latestdoi/312742876)
+
 # 1. Cartorio
 
 A wrapper on the `logging` module for Python that provides a simple and easy to use interface for logging.
