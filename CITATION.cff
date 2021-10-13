@@ -1,10 +1,10 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 authors:
-  - family-names: Druskat
-    given-names: Stephan
-    orcid: https://orcid.org/0000-0003-4925-7248
-title: "My Research Software"
-version: 2.0.4
-doi: 10.5281/zenodo.1234
-date-released: 2021-08-11
+  - family-names: STEIN SHIROMOTO
+    given-names: Humberto
+    orcid: https://orcid.org/0000-0002-0883-0231
+title: "Cartorio: A library for logging"
+version: 2.0.1
+doi: 10.5281/zenodo.5563176
+date-released: 2021-10-12
