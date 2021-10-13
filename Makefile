@@ -46,6 +46,10 @@ bump_patch:
 build:
 	python setup.py sdist bdist_wheel
 
+## Git hooks
+hooks:
+	cp bin/post-checkout .git/hooks/post-checkout
+
 #################################################################################
 # Self Documenting Commands                                                     #
 #################################################################################
