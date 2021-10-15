@@ -23,6 +23,6 @@ if [ "$BRANCH_TYPE" == "release" ]; then
 	sed -i -e "s/$PREVIOUS_VERSION/$NEXT_VERSION/g" ${PROJECT_ROOT}/${PROJECT_NAME}/__init__.py
 
 	echo "Updating release date $PREVIOUS_RELEASE_DATE to $CURRENT_RELEASE_DATE"
-	sed -i -e "s/$PREVIOUS_VERSION/$NEXT_VERSION/g" ${PROJECT_ROOT}/CITATION.cff
+	sed -i -e "s/$PREVIOUS_RELEASE_DATE/$CURRENT_RELEASE_DATE/g" ${PROJECT_ROOT}/CITATION.cff
 
 fi
