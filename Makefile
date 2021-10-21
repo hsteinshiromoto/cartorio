@@ -1,16 +1,12 @@
 SHELL:=/bin/bash
 # ---
-# Arguments
+# Sphinx documentation
 # ---
-
-# Files to be copied in build phase of the container
-ifndef DOCKER_TAG
-DOCKER_TAG=latest
-endif
-
-ifndef DOCKER_PARENT_IMAGE
-DOCKER_PARENT_IMAGE="python:3.9-slim"
-endif
+SPHINXOPTS    =
+SPHINXBUILD   = sphinx-build
+SPHINXPROJ    = cartorio
+SOURCEDIR     = .
+BUILDDIR      = build
 
 # ---
 # Global Variables
@@ -50,6 +46,10 @@ build:
 hooks:
 	cp bin/post-checkout .git/hooks/post-checkout
 
+## Sphinx documentation
+%: Makefile
+	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
 #################################################################################
 # Self Documenting Commands                                                     #
 #################################################################################
@@ -71,7 +71,7 @@ hooks:
 # 	* print line
 # Separate expressions are necessary because labels cannot be delimited by
 # semicolon; see <http://stackoverflow.com/a/11799865/1968>
-.PHONY: help build
+.PHONY: help Makefile
 help:
 	@echo "$$(tput bold)Available rules:$$(tput sgr0)"
 	@echo

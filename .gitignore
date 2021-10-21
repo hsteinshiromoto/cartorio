@@ -6,3 +6,4 @@ __pycache__/*
 *.py-e
 __pycache__/draft.cpython-38.pyc
 .DS_Store
+build/*
