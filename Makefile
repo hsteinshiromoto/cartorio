@@ -4,7 +4,7 @@ SHELL:=/bin/bash
 # ---
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
-SPHINXPROJ    = myproj
+SPHINXPROJ    = cartorio
 SOURCEDIR     = .
 BUILDDIR      = build
 
