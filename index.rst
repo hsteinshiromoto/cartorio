@@ -10,7 +10,8 @@ Welcome to Cartorio's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+.. automodule:: cartorio.log
+    :members:
 
 Indices and tables
 ==================
