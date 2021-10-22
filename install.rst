@@ -1,3 +1,4 @@
 Installation
+============
 
-pip install cartorio
+``pip install cartorio``

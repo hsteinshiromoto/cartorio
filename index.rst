@@ -10,6 +10,8 @@ Welcome to Cartorio's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   install
+
 .. automodule:: cartorio.log
     :members:
 
