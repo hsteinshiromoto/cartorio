@@ -4,7 +4,7 @@ on:
   push:
     # Publish `master` as Docker `latest` image.
     branches:       # See https://stackoverflow.com/questions/57699839/github-actions-how-to-target-all-branches-except-master for choices
-      - '**'        # matches every branch
+      - '!master'        # matches every branch
 
     # Publish `v1.2.3` tags as releases.
     tags:
