@@ -1,5 +1,5 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5563175.svg)](https://doi.org/10.5281/zenodo.5563175)
-
+[![Documentation Status](https://readthedocs.org/projects/cartorio/badge/)](https://cartorio.readthedocs.io/en)
 
 # 1. Cartorio
 
