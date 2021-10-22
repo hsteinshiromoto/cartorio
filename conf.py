@@ -23,7 +23,7 @@ copyright = '2021, Humberto STEIN SHIROMOTO'
 author = 'Humberto STEIN SHIROMOTO'
 
 # The full version, including alpha/beta/rc tags
-release = '2.0.3'
+release = '2.0.4'
 
 
 # -- General configuration ---------------------------------------------------
@@ -31,8 +31,7 @@ release = '2.0.3'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [
-]
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.napoleon']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

@@ -7,3 +7,4 @@ __pycache__/*
 __pycache__/draft.cpython-38.pyc
 .DS_Store
 build/*
+*.*-e
