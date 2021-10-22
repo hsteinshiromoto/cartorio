@@ -12,6 +12,9 @@ Welcome to Cartorio's documentation!
 
    install
 
+Usage
+=====
+
 .. automodule:: cartorio.log
     :members:
 
