@@ -11,12 +11,8 @@ Welcome to Cartorio's documentation!
    :caption: Contents:
 
    install
+   api
 
-Usage
-=====
-
-.. automodule:: cartorio.log
-    :members:
 
 Indices and tables
 ==================
