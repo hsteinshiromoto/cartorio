@@ -9,14 +9,19 @@ A wrapper on the `logging` module for Python that provides a simple and easy to 
 - [1. Cartorio](#1-cartorio)
 - [2. Contents](#2-contents)
 - [3. Installation](#3-installation)
-- [4. Usage](#4-usage)
+- [4. Documentation](#4-documentation)
+- [5. Usage](#5-usage)
 
 # 3. Installation
 ```bash
 pip install cartorio
 ```
 
-# 4. Usage
+# 4. Documentation
+
+https://cartorio.readthedocs.io/en/latest/
+
+# 5. Usage
 Example:
 
 ```python
