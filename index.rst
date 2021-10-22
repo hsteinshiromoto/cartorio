@@ -10,9 +10,12 @@ Welcome to Cartorio's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   install
    api
 
+Intallation
+===========
+
+``pip install cartorio``
 
 Indices and tables
 ==================
