@@ -12,7 +12,7 @@ Welcome to Cartorio's documentation!
 
    api
 
-Intallation
+Installation
 ===========
 
 ``pip install cartorio``
