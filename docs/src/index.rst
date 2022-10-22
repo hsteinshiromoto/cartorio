@@ -7,10 +7,13 @@ Welcome to Cartorio's documentation!
 ====================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+   :caption: Modules:
 
    api
+
+Readme
+======
 
 .. include:: ../../README.md
    :parser: myst_parser.sphinx_
