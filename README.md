@@ -4,7 +4,7 @@
 
 # 1. Cartorio
 
-A wrapper on the `logging` module for Python that provides a simple and easy to use interface for logging.
+A wrapper on the `logging` module for Python that provides a simple and easy-to-use interface for logging.
 
 # 2. Contents
 - [1. Cartorio](#1-cartorio)
