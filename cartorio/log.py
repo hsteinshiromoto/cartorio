@@ -2,9 +2,9 @@ import functools
 import inspect
 import logging
 import logging.config
-import subprocess
 from datetime import datetime
 from pathlib import Path
+from typing import Union
 
 PATH_SRC = Path(__file__).resolve().parent
 
@@ -128,14 +128,14 @@ def set_handler(filename: str, log_format: str, logs_path: Path) -> logging.File
     return fh
 
 
-def log(filename: str, logs_path: Path
+def log(filename: Union[str, Path], logs_path: Path
         ,log_config_file=PATH_SRC/"conf"/"logging.conf"):
     """
     Instantiate logger object
 
     Args:
-        filename (str): Log file
-        path (Path): Path where the log file is saved
+        filename (str, Path): Log file
+        logs_path (Path): Path where the log file is saved
         log_config_file (Path, optional): Path contaning the log config file. Defaults to PROJECT_ROOT / "conf" / "logging.conf"
 
     Returns:
@@ -167,4 +167,5 @@ def log(filename: str, logs_path: Path
 
 
 if __name__ == "__main__":
-    logger = log(__file__)
+    logs_path = Path(__file__).resolve().parent
+    logger = log(__file__, logs_path)
