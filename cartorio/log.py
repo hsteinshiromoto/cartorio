@@ -136,7 +136,6 @@ def log(filename: str, logs_path: Path
     Args:
         filename (str): Log file
         path (Path): Path where the log file is saved
-        test (bool): Return filename
         log_config_file (Path, optional): Path contaning the log config file. Defaults to PROJECT_ROOT / "conf" / "logging.conf"
 
     Returns:
