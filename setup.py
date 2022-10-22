@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="cartorio",
-    version="2.0.6",
+    version="2.0.7",
     description="Cartorio: A library for logging",
     long_description=README,
     long_description_content_type="text/markdown",
