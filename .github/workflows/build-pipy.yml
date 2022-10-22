@@ -33,7 +33,7 @@ jobs:
         run: make build
 
       - name: Install Sphinx
-        run: pip install sphinx sphinx_rtd_theme
+        run: pip install sphinx sphinx_rtd_theme myst-parser
 
       - name: Build Documentation
         run: make html
