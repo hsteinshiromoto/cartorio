@@ -5,6 +5,9 @@ on:
     # Publish `master` as Docker `latest` image.
     branches:       # See https://stackoverflow.com/questions/57699839/github-actions-how-to-target-all-branches-except-master for choices
       - '!master'        # branch except master
+      - 'feature/*'
+      - 'hotfix/*'
+      - 'release/*'
 
     # Publish `v1.2.3` tags as releases.
     tags:
@@ -28,6 +31,12 @@ jobs:
 
       - name: Build Package
         run: make build
+
+      - name: Install Sphinx
+        run: pip install sphinx sphinx_rtd_theme myst-parser
+
+      - name: Build Documentation
+        run: make html
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2

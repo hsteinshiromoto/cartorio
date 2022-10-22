@@ -7,15 +7,16 @@ Welcome to Cartorio's documentation!
 ====================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+   :caption: Modules:
 
    api
 
-Intallation
-===========
+Readme
+======
 
-``pip install cartorio``
+.. include:: ../../README.md
+   :parser: myst_parser.sphinx_
 
 Indices and tables
 ==================
