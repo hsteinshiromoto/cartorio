@@ -26,7 +26,7 @@ copyright = '2021, Humberto STEIN SHIROMOTO'
 author = 'Humberto STEIN SHIROMOTO'
 
 # The full version, including alpha/beta/rc tags
-release = '2.0.5'
+release = '2.0.6'
 
 
 # -- General configuration ---------------------------------------------------
