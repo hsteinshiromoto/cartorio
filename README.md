@@ -33,6 +33,9 @@ from cartorio import fun, log
 
 # Test instantiation of log file
 logger = log(filename=Path(__file__).resolve().stem, logs_path=Path(__file__).resolve().parent)
+# where,
+# filename (str, Path): Log file.
+# logs_path (Path): Path where the log file is saved to.
 
 @fun
 def multiply(num1, num2):
