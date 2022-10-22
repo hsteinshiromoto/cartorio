@@ -23,7 +23,6 @@ pip install cartorio
 https://cartorio.readthedocs.io/en/latest/
 
 # 5. Usage
-Example:
 
 Consider that your project consists of two scripts:
 
