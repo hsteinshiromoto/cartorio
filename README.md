@@ -25,22 +25,42 @@ https://cartorio.readthedocs.io/en/latest/
 # 5. Usage
 Example:
 
+Consider that your project consists of two scripts:
+
+```bash
+parent.py
+child/
+└──  child.py
+```
+
+An example of these scripts are:
 ```python
-import sys
+# parent.py
+
 from pathlib import Path
 
 from cartorio import fun, log
 
-# Test instantiation of log file
-logger = log(filename=Path(__file__).resolve().stem, logs_path=Path(__file__).resolve().parent)
-# where,
-# filename (str, Path): Log file.
-# logs_path (Path): Path where the log file is saved to.
+from child.child import multiply
+
+def main()
+    multiply(10, 1)
+
+if __name__ == "__main__":
+    # Instantiation of log file
+    logger = log(filename=Path(__file__).resolve().stem, logs_path=Path(__file__).resolve().parent)
+    # where,
+    # filename (str, Path): Log file.
+    # logs_path (Path): Path where the log file is saved to.
+    main()
+```
+
+```python
+# child.py
+
+from cartorio import fun, log
 
 @fun
 def multiply(num1, num2):
     return num1 * num2
-
-# Test if entry and exit log messages are correct
-multiply(10, 1)
 ```
