@@ -38,7 +38,6 @@ An example of these scripts are:
 # parent.py
 
 from pathlib import Path
-
 from cartorio import fun, log
 
 from child.child import multiply
