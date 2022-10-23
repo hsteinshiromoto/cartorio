@@ -18,10 +18,10 @@ def get_files(path: Path = PROJECT_ROOT) -> list[Path]:
         list[Path]: List of files with path to be changed.
     """
     return [
-        PROJECT_ROOT / "CITATION.cff",
-        PROJECT_ROOT / "setup.py",
-        PROJECT_ROOT / "cartorio" / "__init__.py",
-        PROJECT_ROOT / "docs" / "src" / "conf.py",
+        path / "CITATION.cff",
+        path / "setup.py",
+        path / "cartorio" / "__init__.py",
+        path / "docs" / "src" / "conf.py",
     ]
 
 
