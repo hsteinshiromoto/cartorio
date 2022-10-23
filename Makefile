@@ -1,4 +1,7 @@
 SHELL:=/bin/bash
+
+.DEFAULT_GOAL := help
+.PHONY: help Makefile
 # ---
 # Sphinx documentation
 # ---
@@ -19,6 +22,7 @@ DOCKER_IMAGE_NAME = hsteinshiromoto/${PROJECT_NAME}
 
 BUILD_DATE = $(shell date +%Y%m%d-%H:%M:%S)
 
+DOCKER_TAG=$(shell git ls-files -s Dockerfile | awk '{print $$2}' | cut -c1-16)
 # ---
 # Commands
 # ---
@@ -31,6 +35,17 @@ build:
 hooks:
 	cp bin/post-checkout .git/hooks/post-checkout
 
+## Docker image
+image:
+	$(eval DOCKER_IMAGE_TAG=${DOCKER_IMAGE_NAME}:${DOCKER_TAG})
+
+	@echo "Building docker image ${DOCKER_IMAGE_TAG}"
+	docker build --build-arg BUILD_DATE=${BUILD_DATE} \
+				--build-arg PROJECT_NAME=${PROJECT_NAME} \
+				-f Dockerfile \
+				-t ${DOCKER_IMAGE_TAG} .
+	@echo "Done"
+
 ## Sphinx documentation
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
@@ -39,7 +54,7 @@ hooks:
 # Self Documenting Commands                                                     #
 #################################################################################
 
-.DEFAULT_GOAL := help
+
 
 # Inspired by <http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html>
 # sed script explained:
@@ -56,7 +71,6 @@ hooks:
 # 	* print line
 # Separate expressions are necessary because labels cannot be delimited by
 # semicolon; see <http://stackoverflow.com/a/11799865/1968>
-.PHONY: help Makefile
 help:
 	@echo "$$(tput bold)Available rules:$$(tput sgr0)"
 	@echo
