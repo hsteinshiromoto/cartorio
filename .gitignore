@@ -9,4 +9,3 @@ __pycache__/draft.cpython-38.pyc
 build/*
 *.*-e
 docs/src/_build/*
-docs/*

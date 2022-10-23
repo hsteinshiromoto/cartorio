@@ -49,7 +49,7 @@ image:
 ## Sphinx documentation
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	mv docs/html/* docs/
+	cp -r docs/html/* docs/ && rm -R docs/html
 
 #################################################################################
 # Self Documenting Commands                                                     #
