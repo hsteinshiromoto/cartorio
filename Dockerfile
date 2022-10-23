@@ -32,6 +32,7 @@ RUN apt update && \
     apt install -y build-essential \
     curl \
     git \
+    git-flow \
     gnupg2 \
     make \
     pandoc \
