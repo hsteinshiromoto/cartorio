@@ -28,8 +28,8 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 # ---
 # Set up the necessary Debian packages
 # ---
-RUN apt-get update && \
-    apt-get install -y build-essential \
+RUN apt update && \
+    apt install -y build-essential \
     curl \
     git \
     gnupg2 \
@@ -37,12 +37,9 @@ RUN apt-get update && \
     pandoc \
     sudo \
     vim \
-    wget \
-    apt-get clean && \
-    apt-get --purge remove -y .\*-doc$ && \
-    apt-get clean -y
+    wget
 
 RUN mkdir -p $HOME
 
 COPY requirements.txt /usr/local/ 
-RUN pip install -r /usr/local/requirements.txt
+RUN pip install --upgrade pip && pip install -r /usr/local/requirements.txt
