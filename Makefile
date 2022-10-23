@@ -6,7 +6,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = cartorio
 SOURCEDIR     = docs/src
-BUILDDIR      = build
+BUILDDIR      = docs
 
 # ---
 # Global Variables
