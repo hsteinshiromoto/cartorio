@@ -3,7 +3,7 @@ message: "If you use this software, please cite it as below."
 authors:
   - family-names: STEIN SHIROMOTO
     given-names: Humberto
-    orcid: https://orcid.org/0000-0002.0.93-0231
+    orcid: https://orcid.org/0000-0002-0883-0231
 title: "Cartorio: A library for logging"
 version: 2.0.9
 doi: 10.5281/zenodo.5563175
