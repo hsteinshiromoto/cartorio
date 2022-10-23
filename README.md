@@ -1,6 +1,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5563175.svg)](https://doi.org/10.5281/zenodo.5563175)
 [![Documentation Status](https://readthedocs.org/projects/cartorio/badge/?version=latest)](https://cartorio.readthedocs.io/?badge=latest)
-
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/hsteinshiromoto/cartorio?style=flat)
+![LICENSE](https://img.shields.io/badge/license-MIT-lightgrey.svg)
 
 # 1. Cartorio
 
