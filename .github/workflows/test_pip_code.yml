@@ -1,13 +1,13 @@
 name: Test Pip Install Code
 
 on:
-  workflow_run:
-    workflows: ["PYPI Build and Publish"]
-    types:
-      - completed
-
-  # Run tests for any PRs.
-  pull_request:
+  push:
+    # Publish `master` as Docker `latest` image.
+    branches:       # See https://stackoverflow.com/questions/57699839/github-actions-how-to-target-all-branches-except-master for choices
+      - 'bugfix/*'
+      - 'feature/*'
+      - 'hotfix/*'
+      - 'release/*'
 
 jobs:
   test:
