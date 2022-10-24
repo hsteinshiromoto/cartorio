@@ -30,23 +30,15 @@ jobs:
           echo "::set-output name=tag::${GITHUB_REF#refs/*/}"
         id: current_tag
 
-      - uses: release-drafter/release-drafter@v5
-        # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
-        # with:
-          config-name: release_template.yml
-        #   disable-autolabeler: true
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: Release ${{ github.ref }}
-      #     body: |
-      #       **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ steps.previous_tag.outputs.tag }}...${{ steps.current_tag.outputs.tag }}
-      #     draft: false
-      #     prerelease: false
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ steps.previous_tag.outputs.tag }}...${{ steps.current_tag.outputs.tag }}
+          draft: false
+          prerelease: false
