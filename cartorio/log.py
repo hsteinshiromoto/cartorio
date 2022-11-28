@@ -4,7 +4,7 @@ import logging
 import logging.config
 from datetime import datetime
 from pathlib import Path
-from typing import Union
+from typing import Tuple, Union
 
 PATH_SRC = Path(__file__).resolve().parent
 
@@ -129,7 +129,7 @@ def set_handler(filename: str, log_format: logging.Formatter, logs_path: Path) -
 
 
 def make_logger(filename: Union[str, Path], logs_path: Path
-        ,log_config_file=PATH_SRC/"conf"/"logging.conf") -> tuple[logging.RootLogger, str]:
+        ,log_config_file=PATH_SRC/"conf"/"logging.conf") -> Tuple[logging.RootLogger, str]:
     """
     Instantiate logger object
 
