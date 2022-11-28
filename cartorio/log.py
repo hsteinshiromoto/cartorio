@@ -4,12 +4,12 @@ import logging
 import logging.config
 from datetime import datetime
 from pathlib import Path
-from typing import Union
+from typing import Tuple, Union
 
 PATH_SRC = Path(__file__).resolve().parent
 
 
-def fun(func):
+def log(func):
     """
     Log a callable
 
@@ -76,7 +76,7 @@ def make_path(path: Path=PATH_SRC/"logs") -> Path:
     return path
 
 
-def config_logger(log_config_file: Path=PATH_SRC/"conf"/"logging.conf") -> logging.getLogger:
+def config_logger(log_config_file: Path=PATH_SRC/"conf"/"logging.conf") -> logging.RootLogger:
     """
     Configure logger object
 
@@ -84,7 +84,7 @@ def config_logger(log_config_file: Path=PATH_SRC/"conf"/"logging.conf") -> loggi
         log_config_file (Path, optional): Path where the log config file is. Defaults to PROJECT_ROOT / "cartorio" / "conf" / "logging.conf".
 
     Returns:
-        (logging.getLogger): Logger object
+        logging.RootLogger: Logger object
 
     Example:
         >>> _ = config_logger()
@@ -96,13 +96,13 @@ def config_logger(log_config_file: Path=PATH_SRC/"conf"/"logging.conf") -> loggi
     return logging.getLogger()
 
 
-def set_handler(filename: str, log_format: str, logs_path: Path) -> logging.FileHandler:
+def set_handler(filename: str, log_format: logging.Formatter, logs_path: Path) -> logging.FileHandler:
     """
     Set file handler for logger object
 
     Args:
         filename (str): File to be logged
-        log_format (str): Log format
+        log_format (logging.Formatter): Log format
         logs_path (Path): Path where the log is saved.
     
     Raises:
@@ -128,8 +128,8 @@ def set_handler(filename: str, log_format: str, logs_path: Path) -> logging.File
     return fh
 
 
-def log(filename: Union[str, Path], logs_path: Path
-        ,log_config_file=PATH_SRC/"conf"/"logging.conf"):
+def make_logger(filename: Union[str, Path], logs_path: Path
+        ,log_config_file=PATH_SRC/"conf"/"logging.conf") -> Tuple[logging.RootLogger, str]:
     """
     Instantiate logger object
 
@@ -139,11 +139,11 @@ def log(filename: Union[str, Path], logs_path: Path
         log_config_file (Path, optional): Path contaning the log config file. Defaults to PROJECT_ROOT / "conf" / "logging.conf"
 
     Returns:
-        (logging.getLogger()): Logging object
+        Tuple[logging.RootLogger, str]: Logging object and timestamp.
 
     Example:
         >>> logs_path = Path(__file__).resolve().parent
-        >>> logger = log("test.log", logs_path)
+        >>> logger = make_logger("test.log", logs_path)
 
     References:
         [1] https://realpython.com/python-logging/
@@ -155,7 +155,8 @@ def log(filename: Union[str, Path], logs_path: Path
     logger = config_logger(log_config_file=log_config_file)
 
     # 3. Create log file
-    format_filename = f"{Path(filename).stem}_{datetime.now().date()}_{datetime.now().time()}.log"
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    format_filename = f"{Path(filename).stem}_{timestamp}.log"
     log_format = logging.Formatter(
         '%(asctime)-16s || %(name)s || %(process)d || %(levelname)s || %(message)s')
 
@@ -163,9 +164,9 @@ def log(filename: Union[str, Path], logs_path: Path
 
     logger.addHandler(fh)
 
-    return logger
+    return logger, timestamp
 
 
 if __name__ == "__main__":
     logs_path = Path(__file__).resolve().parent
-    logger = log(__file__, logs_path)
+    logger = make_logger(__file__, logs_path)

@@ -40,7 +40,7 @@ RUN apt update && \
     vim \
     wget
 
-RUN mkdir -p $HOME
+RUN pip install --upgrade pip && pip install pytest sphinx sphinx_rtd_theme myst-parser
 
-COPY requirements.txt /usr/local/ 
-RUN pip install --upgrade pip && pip install -r /usr/local/requirements.txt
+RUN mkdir -p $HOME
+WORKDIR $HOME

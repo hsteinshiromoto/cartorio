@@ -1,3 +1,3 @@
-__version__ = "2.0.10"
+__version__ = "3.0.0"
 
-from cartorio.log import log, fun
+from cartorio.log import make_logger, log

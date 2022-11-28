@@ -52,11 +52,11 @@ def test_set_handler():
 def test_fun():
     """Test log function
     """
-    @fun
+    @log
     def divide(num1, num2):
         return num1 / num2
 
-    @fun
+    @log
     def multiply(num1, num2):
         return num1 * num2
 
@@ -72,6 +72,6 @@ def test_log():
     """Test main function
     """
     logs_path = Path(tempfile.mkdtemp())
-    logger = log("test.log", logs_path)
+    logger, _ = make_logger("test.log", logs_path)
     
     assert True

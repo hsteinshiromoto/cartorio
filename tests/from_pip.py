@@ -1,18 +1,18 @@
 import sys
 from pathlib import Path
 
-from cartorio import fun, log
+from cartorio import log, make_logger
 
 # Tests installation from pip
 
 # Test instantiation of log file
-logger = log(filename=Path(__file__).resolve().stem, logs_path=Path(__file__).resolve().parent)
+logger, _ = make_logger(filename=Path(__file__).resolve().stem, logs_path=Path(__file__).resolve().parent)
 
-@fun
+@log
 def divide(num1, num2):
     return num1 / num2
 
-@fun
+@log
 def multiply(num1, num2):
     return num1 * num2
 

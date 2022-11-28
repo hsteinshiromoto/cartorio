@@ -31,6 +31,10 @@ DOCKER_TAG=$(shell git ls-files -s Dockerfile | awk '{print $$2}' | cut -c1-16)
 build:
 	python setup.py sdist bdist_wheel
 
+## Clean log files
+clean:
+	find . -type f -name '*.log' -delete
+
 ## Git hooks
 hooks:
 	cp bin/post-checkout .git/hooks/post-checkout
