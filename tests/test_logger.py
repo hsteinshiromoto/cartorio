@@ -72,6 +72,6 @@ def test_log():
     """Test main function
     """
     logs_path = Path(tempfile.mkdtemp())
-    logger = log("test.log", logs_path)
+    logger, _ = make_logger("test.log", logs_path)
     
     assert True
