@@ -38,16 +38,17 @@ An example of these scripts are:
 # parent.py
 
 from pathlib import Path
-from cartorio import fun, log
+from cartorio import make_logger, log
 
 from child.child import multiply
 
+@log
 def main()
     multiply(10, 1)
 
 if __name__ == "__main__":
     # Instantiation of log file
-    logger = log(filename=Path(__file__).resolve().stem, logs_path=Path(__file__).resolve().parent)
+    logger, _ = make_logger(filename=Path(__file__).resolve().stem, logs_path=Path(__file__).resolve().parent)
     # where,
     # filename (str, Path): Log file.
     # logs_path (Path): Path where the log file is saved to.
@@ -59,7 +60,13 @@ if __name__ == "__main__":
 
 from cartorio import fun, log
 
-@fun
+@log
 def multiply(num1, num2):
     return num1 * num2
+```
+
+The log filename will be `parent_<timestamp>.log` and it will contain the information in the form
+```
+<timestamp> || root || 30664 || INFO || parent.py || parent || <line_number> || Enter || multiply
+<timestamp> || root || 30664 || INFO || parent.py || parent || <line_number> || Leave || multiply || Elapsed: 0:00:00.001708
 ```
