@@ -76,7 +76,7 @@ def make_path(path: Path=PATH_SRC/"logs") -> Path:
     return path
 
 
-def config_logger(log_config_file: Path=PATH_SRC/"conf"/"logging.conf") -> logging.getLogger:
+def config_logger(log_config_file: Path=PATH_SRC/"conf"/"logging.conf") -> logging.RootLogger:
     """
     Configure logger object
 
@@ -129,7 +129,7 @@ def set_handler(filename: str, log_format: str, logs_path: Path) -> logging.File
 
 
 def make_logger(filename: Union[str, Path], logs_path: Path
-        ,log_config_file=PATH_SRC/"conf"/"logging.conf"):
+        ,log_config_file=PATH_SRC/"conf"/"logging.conf") -> logging.RootLogger:
     """
     Instantiate logger object
 
