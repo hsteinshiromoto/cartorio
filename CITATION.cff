@@ -5,6 +5,6 @@ authors:
     given-names: Humberto
     orcid: https://orcid.org/0000-0002-0883-0231
 title: "Cartorio: A library for logging"
-version: 2.0.10
+version: 3.0.0
 doi: 10.5281/zenodo.5563175
-date-released: 2022-10-24
+date-released: 2022-11-29
