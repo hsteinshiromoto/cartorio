@@ -9,7 +9,7 @@ from typing import Tuple, Union
 PATH_SRC = Path(__file__).resolve().parent
 
 
-def fun(func):
+def log(func):
     """
     Log a callable
 
@@ -139,7 +139,7 @@ def make_logger(filename: Union[str, Path], logs_path: Path
         log_config_file (Path, optional): Path contaning the log config file. Defaults to PROJECT_ROOT / "conf" / "logging.conf"
 
     Returns:
-        logging.RootLogger: Logging object
+        Tuple[logging.RootLogger, str]: Logging object and timestamp.
 
     Example:
         >>> logs_path = Path(__file__).resolve().parent
