@@ -96,13 +96,13 @@ def config_logger(log_config_file: Path=PATH_SRC/"conf"/"logging.conf") -> loggi
     return logging.getLogger()
 
 
-def set_handler(filename: str, log_format: str, logs_path: Path) -> logging.FileHandler:
+def set_handler(filename: str, log_format: logging.Formatter, logs_path: Path) -> logging.FileHandler:
     """
     Set file handler for logger object
 
     Args:
         filename (str): File to be logged
-        log_format (str): Log format
+        log_format (logging.Formatter): Log format
         logs_path (Path): Path where the log is saved.
     
     Raises:
