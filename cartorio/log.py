@@ -9,7 +9,7 @@ from typing import Tuple, Union
 PATH_SRC = Path(__file__).resolve().parent
 
 
-def fun(func):
+def log(func):
     """
     Log a callable
 

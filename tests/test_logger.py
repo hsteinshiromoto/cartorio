@@ -52,11 +52,11 @@ def test_set_handler():
 def test_fun():
     """Test log function
     """
-    @fun
+    @log
     def divide(num1, num2):
         return num1 / num2
 
-    @fun
+    @log
     def multiply(num1, num2):
         return num1 * num2
 
