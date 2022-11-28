@@ -84,7 +84,7 @@ def config_logger(log_config_file: Path=PATH_SRC/"conf"/"logging.conf") -> loggi
         log_config_file (Path, optional): Path where the log config file is. Defaults to PROJECT_ROOT / "cartorio" / "conf" / "logging.conf".
 
     Returns:
-        (logging.getLogger): Logger object
+        logging.RootLogger: Logger object
 
     Example:
         >>> _ = config_logger()
@@ -139,7 +139,7 @@ def make_logger(filename: Union[str, Path], logs_path: Path
         log_config_file (Path, optional): Path contaning the log config file. Defaults to PROJECT_ROOT / "conf" / "logging.conf"
 
     Returns:
-        (logging.getLogger()): Logging object
+        logging.RootLogger: Logging object
 
     Example:
         >>> logs_path = Path(__file__).resolve().parent
