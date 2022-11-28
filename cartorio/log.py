@@ -129,7 +129,7 @@ def set_handler(filename: str, log_format: str, logs_path: Path) -> logging.File
 
 
 def make_logger(filename: Union[str, Path], logs_path: Path
-        ,log_config_file=PATH_SRC/"conf"/"logging.conf") -> logging.RootLogger:
+        ,log_config_file=PATH_SRC/"conf"/"logging.conf") -> tuple[logging.RootLogger, str]:
     """
     Instantiate logger object
 
@@ -155,7 +155,8 @@ def make_logger(filename: Union[str, Path], logs_path: Path
     logger = config_logger(log_config_file=log_config_file)
 
     # 3. Create log file
-    format_filename = f"{Path(filename).stem}_{datetime.now().date()}_{datetime.now().time()}.log"
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    format_filename = f"{Path(filename).stem}_{timestamp}.log"
     log_format = logging.Formatter(
         '%(asctime)-16s || %(name)s || %(process)d || %(levelname)s || %(message)s')
 
@@ -163,7 +164,7 @@ def make_logger(filename: Union[str, Path], logs_path: Path
 
     logger.addHandler(fh)
 
-    return logger
+    return logger, timestamp
 
 
 if __name__ == "__main__":
