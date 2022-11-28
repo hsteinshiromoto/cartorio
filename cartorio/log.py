@@ -128,7 +128,7 @@ def set_handler(filename: str, log_format: str, logs_path: Path) -> logging.File
     return fh
 
 
-def log(filename: Union[str, Path], logs_path: Path
+def make_logger(filename: Union[str, Path], logs_path: Path
         ,log_config_file=PATH_SRC/"conf"/"logging.conf"):
     """
     Instantiate logger object
@@ -143,7 +143,7 @@ def log(filename: Union[str, Path], logs_path: Path
 
     Example:
         >>> logs_path = Path(__file__).resolve().parent
-        >>> logger = log("test.log", logs_path)
+        >>> logger = make_logger("test.log", logs_path)
 
     References:
         [1] https://realpython.com/python-logging/
@@ -168,4 +168,4 @@ def log(filename: Union[str, Path], logs_path: Path
 
 if __name__ == "__main__":
     logs_path = Path(__file__).resolve().parent
-    logger = log(__file__, logs_path)
+    logger = make_logger(__file__, logs_path)
