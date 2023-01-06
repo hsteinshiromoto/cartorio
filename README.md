@@ -2,6 +2,7 @@
 [![Documentation Status](https://readthedocs.org/projects/cartorio/badge/?version=stable)](https://cartorio.readthedocs.io/en/stable/?badge=stable)
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/hsteinshiromoto/cartorio?style=flat)
 ![LICENSE](https://img.shields.io/badge/license-MIT-lightgrey.svg)
+[![PyPI version](https://badge.fury.io/py/cartorio.svg)](https://badge.fury.io/py/cartorio)
 
 # 1. Cartorio
 
