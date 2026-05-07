@@ -1,172 +1,158 @@
 import functools
 import inspect
-import logging
-import logging.config
+import os
+import warnings
 from datetime import datetime
 from pathlib import Path
-from typing import Tuple, Union
+from typing import Any, Optional, Tuple
 
-PATH_SRC = Path(__file__).resolve().parent
+import structlog
+
+_STRUCTLOG_CONFIGURED = False
+
+
+def _configure_structlog(force: bool = False) -> None:
+    """Configure structlog processors chain.
+
+    Reads the LOG_FORMAT environment variable to select output format:
+    - ``LOG_FORMAT=json``: one JSON object per log line (production).
+    - anything else (or absent): coloured console output (development).
+
+    Args:
+        force: Re-configure even if already configured. Useful in tests
+            when LOG_FORMAT changes between test cases.
+
+    Example:
+        >>> _configure_structlog()
+        >>> _configure_structlog(force=True)  # reset, e.g. in tests
+    """
+    global _STRUCTLOG_CONFIGURED
+    if _STRUCTLOG_CONFIGURED and not force:
+        return
+
+    shared_processors = [
+        structlog.stdlib.add_log_level,
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.ExceptionRenderer(),
+    ]
+
+    log_format = os.getenv("LOG_FORMAT", "console").lower()
+    if log_format == "json":
+        final_processor = structlog.processors.JSONRenderer()
+    else:
+        final_processor = structlog.dev.ConsoleRenderer(colors=True)
+
+    structlog.configure(
+        processors=shared_processors + [final_processor],
+        wrapper_class=structlog.make_filtering_bound_logger(0),
+        context_class=dict,
+        logger_factory=structlog.PrintLoggerFactory(),
+        cache_logger_on_first_use=True,
+    )
+    _STRUCTLOG_CONFIGURED = True
+
+
+def make_logger(
+    filename: Any,
+    logs_path: Optional[Path] = None,
+    **kwargs: Any,
+) -> Tuple[Any, str]:
+    """Return a structlog bound logger and a timestamp string.
+
+    Accepts the same positional signature as the previous ``logging``-based
+    implementation so existing callers that do ``logger, _ = make_logger(...)``
+    continue to work without changes.
+
+    Args:
+        filename: Source file or logical name used to derive the logger name.
+            Typically ``__file__`` or a plain string such as ``"myapp"``.
+        logs_path: Accepted but ignored. File-based logging is no longer
+            supported.  Passing a non-``None`` value emits a
+            ``DeprecationWarning``.
+        **kwargs: Additional keyword arguments are accepted but ignored for
+            backwards compatibility.
+
+    Returns:
+        A two-element tuple ``(bound_logger, timestamp)`` where
+        ``bound_logger`` is a :class:`structlog.BoundLogger` instance and
+        ``timestamp`` is an ISO-like string (``"%Y-%m-%d_%H-%M-%S"``).
+
+    Example:
+        >>> logger, ts = make_logger("myapp")
+        >>> logger.info("hello", key="value")
+    """
+    if logs_path is not None:
+        warnings.warn(
+            "logs_path is ignored; file-based logging is no longer supported.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+    _configure_structlog()
+    name = Path(filename).stem if filename else "cartorio"
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    return structlog.get_logger(name), timestamp
 
 
 def log(func):
-    """
-    Log a callable
+    """Decorator that logs entry, exit, elapsed time, and exceptions.
+
+    Uses structlog to emit structured events:
+
+    * ``event="enter"`` — emitted before the function executes.
+    * ``event="leave"`` — emitted after the function returns (or raises).
+    * ``event="error"`` — emitted when an unhandled exception is raised.
+
+    Each event carries ``function``, ``module``, ``filename``, and (for
+    ``"leave"`` and ``"error"``) ``elapsed`` keys.
 
     Args:
-        func (callable): Callable to be logged
+        func: The callable to wrap.
 
     Returns:
-        Callable: Callable outputs
+        The wrapped callable with identical signature.
 
-    References:
-        [1] https://dev.to/aldo/implementing-logging-in-python-via-decorators-1gje
-        [2] https://stackoverflow.com/questions/6810999/how-to-determine-file-function-and-line-number
+    Example:
+        >>> @log
+        ... def add(a, b):
+        ...     return a + b
+        >>> add(1, 2)
+        3
     """
-    logger = logging.getLogger()
-
-    # Filename where the function is called from
-    func_filename = inspect.currentframe().f_back.f_code.co_filename
+    _configure_structlog()
+    logger = structlog.get_logger(func.__module__)
+    _frame = inspect.currentframe()
+    func_filename = _frame.f_back.f_code.co_filename if _frame and _frame.f_back else __file__
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        callerframerecord = inspect.stack()[1]
-        frame = callerframerecord[0]
-        info = inspect.getframeinfo(frame)
-
-        # Line where the function is called from
-        func_lineno = info.lineno
-
         entering_time = datetime.now()
         logger.info(
-            f"{Path(func_filename).name} || {func.__module__} || {func_lineno} || Enter || {func.__name__}")
-
+            "enter",
+            function=func.__name__,
+            module=func.__module__,
+            filename=Path(func_filename).name,
+        )
         try:
-            return func(*args, **kwargs)
-
-        except Exception as e:
-            error_msg = f"In {func.__name__}"
-            logger.exception(error_msg, exc_info=True)
-            raise e
-
-        finally:
-            leaving_time = datetime.now()
+            result = func(*args, **kwargs)
+        except Exception:
+            elapsed = str(datetime.now() - entering_time)
+            logger.exception(
+                "error",
+                function=func.__name__,
+                module=func.__module__,
+                elapsed=elapsed,
+            )
+            raise
+        else:
+            elapsed = str(datetime.now() - entering_time)
             logger.info(
-                f"{Path(func_filename).name} || {func.__module__} || {func_lineno} || Leave || {func.__name__} || Elapsed: {leaving_time - entering_time}")
+                "leave",
+                function=func.__name__,
+                module=func.__module__,
+                elapsed=elapsed,
+            )
+            return result
 
     return wrapper
-
-
-def make_path(path: Path=PATH_SRC/"logs") -> Path:
-    """
-    Create logs directory if it doesn't exist
-
-    Args:
-        path (Path, optional): Path where the log file is saved. Defaults to PROJECT_ROOT/logs/.
-        test (bool): Return filename
-
-    Returns:
-        (Path): Path to logs directory
-
-    Example:
-        >>> _ = make_path()
-    """
-    path.mkdir(parents=True, exist_ok=True)
-
-    return path
-
-
-def config_logger(log_config_file: Path=PATH_SRC/"conf"/"logging.conf") -> logging.RootLogger:
-    """
-    Configure logger object
-
-    Args:
-        log_config_file (Path, optional): Path where the log config file is. Defaults to PROJECT_ROOT / "cartorio" / "conf" / "logging.conf".
-
-    Returns:
-        logging.RootLogger: Logger object
-
-    Example:
-        >>> _ = config_logger()
-    """
-
-    logging.config.fileConfig(str(log_config_file),
-                              disable_existing_loggers=False)
-
-    return logging.getLogger()
-
-
-def set_handler(filename: str, log_format: logging.Formatter, logs_path: Path) -> logging.FileHandler:
-    """
-    Set file handler for logger object
-
-    Args:
-        filename (str): File to be logged
-        log_format (logging.Formatter): Log format
-        logs_path (Path): Path where the log is saved.
-    
-    Raises:
-        IOError: If folder doesn't exist
-
-    Returns:
-        (logging.FileHandler): File handler object
-
-    Example:
-        >>> format_filename = f"{Path(__file__).stem}.log"
-        >>> log_format = logging.Formatter('%(asctime)-16s || %(name)s || %(process)d || %(levelname)s || %(message)s')
-        >>> logs_path = Path(__file__).resolve().parent
-        >>> _ = set_handler(__file__, log_format, logs_path=logs_path)
-    """
-    if not logs_path.is_dir():
-        msg = f"Expected dir {logs_path} to exist."
-        raise IOError(msg)
-
-    fh = logging.FileHandler(str(logs_path / f'{filename}'))
-    fh.setLevel(logging.DEBUG)
-    fh.setFormatter(log_format)
-
-    return fh
-
-
-def make_logger(filename: Union[str, Path], logs_path: Path
-        ,log_config_file=PATH_SRC/"conf"/"logging.conf") -> Tuple[logging.RootLogger, str]:
-    """
-    Instantiate logger object
-
-    Args:
-        filename (str, Path): Log file
-        logs_path (Path): Path where the log file is saved
-        log_config_file (Path, optional): Path contaning the log config file. Defaults to PROJECT_ROOT / "conf" / "logging.conf"
-
-    Returns:
-        Tuple[logging.RootLogger, str]: Logging object and timestamp.
-
-    Example:
-        >>> logs_path = Path(__file__).resolve().parent
-        >>> logger = make_logger("test.log", logs_path)
-
-    References:
-        [1] https://realpython.com/python-logging/
-    """
-    # 1. Create logs directory if it doesn't exist
-    _ = make_path(logs_path)
-
-    # 2. Instantiate logger object
-    logger = config_logger(log_config_file=log_config_file)
-
-    # 3. Create log file
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    format_filename = f"{Path(filename).stem}_{timestamp}.log"
-    log_format = logging.Formatter(
-        '%(asctime)-16s || %(name)s || %(process)d || %(levelname)s || %(message)s')
-
-    fh = set_handler(format_filename, log_format, logs_path)
-
-    logger.addHandler(fh)
-
-    return logger, timestamp
-
-
-if __name__ == "__main__":
-    logs_path = Path(__file__).resolve().parent
-    logger = make_logger(__file__, logs_path)
