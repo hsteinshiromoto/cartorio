@@ -6,7 +6,7 @@
 
 # 1. Cartorio
 
-A wrapper on the `logging` module for Python that provides a simple and easy-to-use interface for logging.
+A structured logging library for Python built on [structlog](https://www.structlog.org/). It provides a simple decorator and logger factory that emit structured events in either human-friendly console format (development) or JSON (production).
 
 # 2. Contents
 - [1. Cartorio](#1-cartorio)
@@ -38,36 +38,44 @@ An example of these scripts are:
 ```python
 # parent.py
 
-from pathlib import Path
 from cartorio import make_logger, log
 
 from child.child import multiply
 
 @log
-def main()
+def main():
     multiply(10, 1)
 
 if __name__ == "__main__":
-    # Instantiation of log file
-    logger, _ = make_logger(filename=Path(__file__).resolve().stem, logs_path=Path(__file__).resolve().parent)
-    # where,
-    # filename (str, Path): Log file.
-    # logs_path (Path): Path where the log file is saved to.
+    # Get a structlog bound logger (logs_path is no longer needed)
+    logger, _ = make_logger(__file__)
+    logger.info("starting", app="parent")
     main()
 ```
 
 ```python
 # child.py
 
-from cartorio import fun, log
+from cartorio import log
 
 @log
 def multiply(num1, num2):
     return num1 * num2
 ```
 
-The log filename will be `parent_<timestamp>.log` and it will contain the information in the form
+By default, output is rendered as coloured console text suitable for development:
 ```
-<timestamp> || root || 30664 || INFO || parent.py || parent || <line_number> || Enter || multiply
-<timestamp> || root || 30664 || INFO || parent.py || parent || <line_number> || Leave || multiply || Elapsed: 0:00:00.001708
+2024-01-01T12:00:00.000000Z [info     ] enter   [parent] function=main filename=parent.py module=__main__
+2024-01-01T12:00:00.001000Z [info     ] leave   [parent] elapsed=0:00:00.001000 function=main module=__main__
+```
+
+To emit one JSON object per line (e.g. for log aggregation in production), set the `LOG_FORMAT` environment variable:
+
+```bash
+LOG_FORMAT=json python parent.py
+```
+
+```json
+{"level": "info", "logger": "__main__", "timestamp": "2024-01-01T12:00:00.000000Z", "event": "enter", "function": "main", "filename": "parent.py", "module": "__main__"}
+{"level": "info", "logger": "__main__", "timestamp": "2024-01-01T12:00:00.001000Z", "event": "leave", "function": "main", "elapsed": "0:00:00.001000", "module": "__main__"}
 ```
