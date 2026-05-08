@@ -95,7 +95,7 @@ def make_logger(
     return structlog.get_logger(name), timestamp
 
 
-def log(func):
+def log(func=None, *, level="info", log_args=False):
     """Decorator that logs entry, exit, elapsed time, and exceptions.
 
     Uses structlog to emit structured events:
@@ -107,11 +107,21 @@ def log(func):
     Each event carries ``function``, ``module``, ``filename``, and (for
     ``"leave"`` and ``"error"``) ``elapsed`` keys.
 
+    When ``log_args=True`` the ``"enter"`` event also carries an ``args``
+    dict mapping parameter names to their ``repr()`` values.
+
     Args:
-        func: The callable to wrap.
+        func: The callable to wrap (when used as ``@log`` without
+            parentheses).
+        level: Log level for ``"enter"`` and ``"leave"`` events
+            (``"info"`` or ``"debug"``).  ``"error"`` always uses
+            ``exception``.
+        log_args: If ``True``, include function argument values in the
+            ``"enter"`` event.
 
     Returns:
-        The wrapped callable with identical signature.
+        The wrapped callable with identical signature (or a decorator
+        when called with keyword arguments).
 
     Example:
         >>> @log
@@ -119,8 +129,15 @@ def log(func):
         ...     return a + b
         >>> add(1, 2)
         3
+
+        >>> @log(log_args=True)
+        ... def create_user(name: str, age: int):
+        ...     return {"name": name, "age": age}
     """
     _configure_structlog()
+    if func is None:
+        return functools.partial(log, level=level, log_args=log_args)
+
     logger = structlog.get_logger(func.__module__)
     _frame = inspect.currentframe()
     func_filename = _frame.f_back.f_code.co_filename if _frame and _frame.f_back else __file__
@@ -128,12 +145,22 @@ def log(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         entering_time = datetime.now()
-        logger.info(
-            "enter",
-            function=func.__name__,
-            module=func.__module__,
-            filename=Path(func_filename).name,
-        )
+
+        log_method = getattr(logger, level.lower())
+
+        sig = inspect.signature(func)
+        bound_args = sig.bind(*args, **kwargs)
+        bound_args.apply_defaults()
+
+        extra = {
+            "function": func.__name__,
+            "module": func.__module__,
+            "filename": Path(func_filename).name,
+        }
+        if log_args:
+            extra["args"] = {k: repr(v) for k, v in bound_args.arguments.items()}
+
+        log_method("enter", **extra)
         try:
             result = func(*args, **kwargs)
         except Exception:
@@ -147,7 +174,7 @@ def log(func):
             raise
         else:
             elapsed = str(datetime.now() - entering_time)
-            logger.info(
+            log_method(
                 "leave",
                 function=func.__name__,
                 module=func.__module__,
