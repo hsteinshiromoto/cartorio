@@ -1,57 +1,47 @@
-import logging
-import subprocess
 import sys
+import subprocess
+import warnings
 from pathlib import Path
 
 import pytest
-import tempfile
+from structlog.testing import capture_logs
 
-PROJECT_ROOT = Path(subprocess.Popen(['git', 'rev-parse', '--show-toplevel'],
-                    stdout=subprocess.PIPE).communicate()[0].rstrip().decode('utf-8'))
+PROJECT_ROOT = Path(subprocess.Popen(
+    ['git', 'rev-parse', '--show-toplevel'],
+    stdout=subprocess.PIPE
+).communicate()[0].rstrip().decode('utf-8'))
 
-sys.path.append(str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT))
 
-from cartorio.log import *
-
-
-def test_make_logs_path():
-    """Test if folder is created
-    """
-
-    path = Path(tempfile.mkdtemp())
-    make_path(path)
-    
-    assert path.is_dir()
+from cartorio.log import make_logger, log, _configure_structlog
 
 
-def test_set_handler():
-    """Test if file handler is set
-    """
-    
-    path = Path(tempfile.mkdtemp())
-    make_path(path)
+def test_make_logger_returns_tuple():
+    """make_logger returns a (logger, timestamp_str) two-tuple."""
+    result = make_logger("test")
+    assert isinstance(result, tuple)
+    assert len(result) == 2
+    _, ts = result
+    assert isinstance(ts, str) and ts
 
-    format_filename = f"{Path(__file__).stem}.log"
-    log_format = logging.Formatter('%(asctime)-16s || %(name)s || %(process)d || %(levelname)s || %(message)s')
-    handler = set_handler(format_filename, log_format, path)
 
-    # Test handler data type
-    assert isinstance(handler, logging.FileHandler)
+def test_make_logger_bound_logger():
+    """The logger returned by make_logger has standard log-level methods."""
+    logger, _ = make_logger("test")
+    for method in ("info", "debug", "warning", "error", "exception"):
+        assert callable(getattr(logger, method, None)), f"missing method: {method}"
 
-    # Test if file handler basename is correct
-    msg = f"Expected baseFilename to be {handler.baseFilename}. Got {path / f'{Path(__file__).stem}.log'}."
-    assert handler.baseFilename == str(path / format_filename), msg
 
-    # Test if file handler level is correct
-    assert handler.level == 10
-
-    # Test if log file has been generated
-    assert Path(handler.baseFilename).is_file() == True
+def test_logs_path_deprecation_warning():
+    """Passing logs_path emits a DeprecationWarning."""
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        make_logger("test", logs_path=Path("/tmp"))
+    assert any(issubclass(w.category, DeprecationWarning) for w in caught)
 
 
 def test_fun():
-    """Test log function
-    """
+    """log decorator propagates return values and re-raises exceptions."""
     @log
     def divide(num1, num2):
         return num1 / num2
@@ -60,18 +50,45 @@ def test_fun():
     def multiply(num1, num2):
         return num1 * num2
 
-    # Test if entry and exit log messages are correct
-    multiply(10, 1)
+    assert multiply(10, 2) == 20
 
-    # Test if raised error is correct
     with pytest.raises(ZeroDivisionError):
         divide(10, 0)
 
 
-def test_log():
-    """Test main function
-    """
-    logs_path = Path(tempfile.mkdtemp())
-    logger, _ = make_logger("test.log", logs_path)
-    
-    assert True
+def test_log_decorator_emits_enter_leave():
+    """log decorator emits enter and leave events with required keys."""
+    @log
+    def add(a, b):
+        return a + b
+
+    with capture_logs() as cap:
+        add(1, 2)
+
+    events = [e["event"] for e in cap]
+    assert "enter" in events
+    assert "leave" in events
+
+    leave = next(e for e in cap if e["event"] == "leave")
+    assert "function" in leave
+    assert "elapsed" in leave
+
+
+def test_log_decorator_captures_exception():
+    """log decorator emits an error event when the wrapped function raises."""
+    @log
+    def boom():
+        raise ValueError("test error")
+
+    with capture_logs() as cap:
+        with pytest.raises(ValueError):
+            boom()
+
+    events = [e["event"] for e in cap]
+    assert "error" in events
+
+
+def test_configure_structlog_force():
+    """_configure_structlog(force=True) re-runs without error."""
+    _configure_structlog(force=True)
+    _configure_structlog(force=True)

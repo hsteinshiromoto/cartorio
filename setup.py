@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="cartorio",
-    version="3.0.0",
+    version="4.0.0",
     description="Cartorio: A library for logging",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -23,6 +23,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.9",
     ],
+    install_requires=["structlog>=21.0"],
     packages=["cartorio"],
     include_package_data=True,
     entry_points={
