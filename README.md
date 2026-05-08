@@ -79,3 +79,39 @@ LOG_FORMAT=json python parent.py
 {"level": "info", "logger": "__main__", "timestamp": "2024-01-01T12:00:00.000000Z", "event": "enter", "function": "main", "filename": "parent.py", "module": "__main__"}
 {"level": "info", "logger": "__main__", "timestamp": "2024-01-01T12:00:00.001000Z", "event": "leave", "function": "main", "elapsed": "0:00:00.001000", "module": "__main__"}
 ```
+
+The `@log` decorator also accepts two optional keyword arguments:
+
+### `@log(level="debug")`
+
+Log ``"enter"`` and ``"leave"`` events at ``debug`` level instead of the default ``info``. ``"error"`` events always use ``exception``.
+
+```python
+@log(level="debug")
+def compute(x: int) -> int:
+    return x ** 2
+```
+
+### `@log(log_args=True)`
+
+Include function argument values in the ``"enter"`` event. Values are rendered with ``repr()``.
+
+```python
+@log(log_args=True)
+def create_user(name: str, age: int, admin: bool = False):
+    return {"name": name, "age": age, "admin": admin}
+```
+
+Console output:
+```
+2024-01-01T12:00:00.000000Z [info     ] enter   function=create_user module=__main__ filename=app.py args={'name': 'Alice', 'age': 30, 'admin': True}
+2024-01-01T12:00:00.001000Z [info     ] leave   function=create_user module=__main__ elapsed=0:00:00.001000
+```
+
+Both options can be combined:
+
+```python
+@log(level="debug", log_args=True)
+def expensive_query(user_id: int) -> list:
+    ...
+```
