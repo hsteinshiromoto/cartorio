@@ -95,6 +95,26 @@ def make_logger(
     return structlog.get_logger(name), timestamp
 
 
+def get_logger(name: str = "cartorio") -> Any:
+    """Return a structlog bound logger for use inside functions.
+
+    Ensures structlog is configured before returning the logger, so callers
+    do not need to import structlog directly.
+
+    Args:
+        name: Logger name. Pass ``__name__`` to use the calling module's name.
+
+    Returns:
+        A structlog bound logger.
+
+    Example:
+        >>> logger = get_logger(__name__)
+        >>> logger.info("something happened", key="value")
+    """
+    _configure_structlog()
+    return structlog.get_logger(name)
+
+
 def log(func=None, *, level="info", log_args=False):
     """Decorator that logs entry, exit, elapsed time, and exceptions.
 

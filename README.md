@@ -56,10 +56,13 @@ if __name__ == "__main__":
 ```python
 # child.py
 
-from cartorio import log
+from cartorio import log, get_logger
+
+logger = get_logger(__name__)
 
 @log
 def multiply(num1, num2):
+    logger.info("multiplying", num1=num1, num2=num2)
     return num1 * num2
 ```
 
