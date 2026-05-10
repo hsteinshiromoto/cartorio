@@ -1,6 +1,8 @@
 import functools
 import inspect
+import logging
 import os
+import sys
 import warnings
 from datetime import datetime
 from pathlib import Path
@@ -11,12 +13,32 @@ import structlog
 _STRUCTLOG_CONFIGURED = False
 
 
+def _build_processors() -> list:
+    """Return the shared structlog processor chain based on LOG_FORMAT."""
+    shared = [
+        structlog.stdlib.add_log_level,
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.ExceptionRenderer(),
+    ]
+    if os.getenv("LOG_FORMAT", "console").lower() == "json":
+        final = structlog.processors.JSONRenderer()
+    else:
+        final = structlog.dev.ConsoleRenderer(colors=True)
+    return shared + [final]
+
+
 def _configure_structlog(force: bool = False) -> None:
     """Configure structlog processors chain.
 
     Reads the LOG_FORMAT environment variable to select output format:
     - ``LOG_FORMAT=json``: one JSON object per log line (production).
     - anything else (or absent): coloured console output (development).
+
+    Reads the LOG_LEVEL environment variable to control filtering and output stream:
+    - unset (default): all messages are logged, output goes to ``stderr``.
+    - ``LOG_LEVEL=INFO`` (or any stdlib level name): filters below that level,
+      output redirected to ``stdout``.
 
     Args:
         force: Re-configure even if already configured. Useful in tests
@@ -30,24 +52,19 @@ def _configure_structlog(force: bool = False) -> None:
     if _STRUCTLOG_CONFIGURED and not force:
         return
 
-    shared_processors = [
-        structlog.stdlib.add_log_level,
-        structlog.processors.TimeStamper(fmt="iso"),
-        structlog.processors.StackInfoRenderer(),
-        structlog.processors.ExceptionRenderer(),
-    ]
-
-    log_format = os.getenv("LOG_FORMAT", "console").lower()
-    if log_format == "json":
-        final_processor = structlog.processors.JSONRenderer()
+    log_level_name = os.getenv("LOG_LEVEL", "").upper()
+    if log_level_name:
+        log_level = getattr(logging, log_level_name, logging.DEBUG)
+        log_stream = sys.stdout
     else:
-        final_processor = structlog.dev.ConsoleRenderer(colors=True)
+        log_level = 0
+        log_stream = sys.stderr
 
     structlog.configure(
-        processors=shared_processors + [final_processor],
-        wrapper_class=structlog.make_filtering_bound_logger(0),
+        processors=_build_processors(),
+        wrapper_class=structlog.make_filtering_bound_logger(log_level),
         context_class=dict,
-        logger_factory=structlog.PrintLoggerFactory(),
+        logger_factory=structlog.PrintLoggerFactory(log_stream),
         cache_logger_on_first_use=True,
     )
     _STRUCTLOG_CONFIGURED = True
@@ -158,7 +175,13 @@ def log(func=None, *, level="info", log_args=False):
     if func is None:
         return functools.partial(log, level=level, log_args=log_args)
 
-    logger = structlog.get_logger(func.__module__)
+    if level.lower() == "debug":
+        logger = structlog.wrap_logger(
+            structlog.PrintLogger(sys.stdout),
+            processors=_build_processors(),
+        ).bind()
+    else:
+        logger = structlog.get_logger(func.__module__)
     _frame = inspect.currentframe()
     func_filename = _frame.f_back.f_code.co_filename if _frame and _frame.f_back else __file__
 
